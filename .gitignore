@@ -28,5 +28,9 @@
 *.x86_64
 *.hex
 
+# binary image files
+*.iso
+*.bin
+
 # Debug files
 *.dSYM/
