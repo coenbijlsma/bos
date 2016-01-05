@@ -31,6 +31,8 @@
 # binary image files
 *.iso
 *.bin
+isodir
+sysroot
 
 # Debug files
 *.dSYM/
