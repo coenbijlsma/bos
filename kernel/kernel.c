@@ -76,6 +76,10 @@ void terminal_setcolor(uint8_t color) {
     terminal_color = color;
 }
 
+void terminal_reset_color(void) {
+    terminal_setcolor(make_color(COLOR_LIGHT_GREY, COLOR_BLACK));
+}
+
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
     const size_t index = y * VGA_WIDTH + x;
     terminal_buffer[index] = make_vgaentry(c, color);
@@ -133,7 +137,13 @@ void kernel_main() {
 
     for(size_t i = 1; i <= 30; i++) {
         if (i < 25) {
-            terminal_writestring("Hello, kernel World!\n");
+            terminal_setcolor(make_color(COLOR_GREEN, COLOR_BLACK));
+            terminal_writestring("Hello, ");
+            terminal_setcolor(make_color(COLOR_BLUE, COLOR_BLACK));
+            terminal_writestring("kernel ");
+            terminal_setcolor(make_color(COLOR_BROWN, COLOR_BLACK));
+            terminal_writestring("World!\n");
+            terminal_reset_color();
         } else {
             terminal_writestring("This is a test!\nWith newlines.\n");
         }
