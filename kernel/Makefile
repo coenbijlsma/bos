@@ -12,21 +12,36 @@ KERNEL_DEST=kernel.o
 LINKER_SOURCE=linker.ld
 LINKER_DEST=bos.bin
 
-bos.assemble: 
-	$(AS) $(ASSEMBLY_SOURCE) -o $(ASSEMBLY_DEST)
+OBJS=$(ASSEMBLY_DEST) $(KERNEL_DEST)
 
-bos.compile: bos.assemble
-	$(CC) -c $(KERNEL_SOURCE) -o $(KERNEL_DEST) $(CFLAGS)
+CRTI_OBJ=crti.o
+CRTBEGIN_OBJ=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
+CRTN_OBJ=crtn.o
 
-bos.link: bos.compile
-	$(CC) -T $(LINKER_SOURCE) -o $(LINKER_DEST) $(LFLAGS) $(ASSEMBLY_DEST) $(KERNEL_DEST) -lgcc
+OBJ_LINK_LIST:=$(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(CRTEND_OBJ) $(CRTN_OBJ)
+INTERNAL_OBJS:=$(CRTI_OBJ) $(OBJS) $(CRTN_OBJ)
 
-bos: bos.link
+bos: bos.bin
 	cp $(LINKER_DEST) ../grub/
 
-clean:
-	rm *.o
-	rm *.bin
+crti.o:
+	$(AS) crti.s -o crti.o
 
-.PHONY: bos.assemble bos.compile bos.link bos clean
+crtn.o:
+	$(AS) crtn.s -o crtn.o
+
+boot.o: 
+	$(AS) $(ASSEMBLY_SOURCE) -o $(ASSEMBLY_DEST)
+
+kernel.o:
+	$(CC) -c $(KERNEL_SOURCE) -o $(KERNEL_DEST) $(CFLAGS)
+
+bos.bin: $(OBJ_LINK_LIST)
+	$(CC) -T $(LINKER_SOURCE) -o $(LINKER_DEST) $(LFLAGS) $(OBJ_LINK_LIST) -lgcc
+
+clean:
+	rm -f bos.bin $(INTERNAL_OBJS)
+
+.PHONY: bos clean
 

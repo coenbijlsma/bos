@@ -145,7 +145,7 @@ void kernel_main() {
             terminal_writestring("World!\n");
             terminal_reset_color();
         } else {
-            terminal_writestring("This is a test!\nWith newlines.\n");
+            terminal_writestring("This is a test!\nWith global constructors.\n");
         }
     }
 }

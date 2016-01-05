@@ -8,6 +8,6 @@ makeiso:
 	$(GRUB) -o bos.iso isodir
 
 clean:
-	rm isodir/boot/bos.bin
-	rm isodir/boot/grub/grub.cfg
-	rm bos.iso
+	rm -f isodir/boot/bos.bin
+	rm -f isodir/boot/grub/grub.cfg
+	rm -f bos.iso
